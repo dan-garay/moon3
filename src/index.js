@@ -2,11 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+
+import { Provider as ReduxProvider } from 'react-redux'
+import createStore from './createReduxStore'
+import SendOneLamportToRandomAddress from './WalletBalance';
 import reportWebVitals from './reportWebVitals';
+
+const store = createStore()
+
 
 ReactDOM.render(
   <React.StrictMode>
+    <ReduxProvider store={store}>
     <App />
+    <SendOneLamportToRandomAddress />
+    </ReduxProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
