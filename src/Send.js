@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, SystemProgram, Transaction } from '@solana/web3.js';
 import React, { useCallback } from 'react';
 
-export const SendOneLamportToRandomAddress = () => {
+export const Send = () => {
     const { connection } = useConnection();
     const { publicKey, sendTransaction } = useWallet();
 
@@ -25,9 +25,7 @@ export const SendOneLamportToRandomAddress = () => {
 
     return (
         <button onClick={onClick} disabled={!publicKey}>
-            Send 1 lamport to a random address!
+            Send 1 lamport to a random address
         </button>
     );
 };
-
-export default SendOneLamportToRandomAddress;
