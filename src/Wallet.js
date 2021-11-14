@@ -15,6 +15,7 @@ import React, { useCallback, useMemo } from 'react';
 import { Navigation } from './Navigation';
 import { Send } from './Send';
 import { Balance } from './Balance';
+import { Swap } from './Swap';
 
 export const Wallet = () => {
     const network = WalletAdapterNetwork.Devnet;
@@ -44,6 +45,7 @@ export const Wallet = () => {
                     <Navigation />
                     <Send />
                     <Balance />
+                    <Swap />
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

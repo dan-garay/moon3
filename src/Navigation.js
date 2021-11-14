@@ -8,7 +8,7 @@ export const Navigation = () => {
 
     return (
         <nav>
-            <h1>Solana Starter App</h1>
+            <h1>Moonrace</h1>
             <div>
                 <WalletMultiButton />
                 {wallet && <WalletDisconnectButton />}
