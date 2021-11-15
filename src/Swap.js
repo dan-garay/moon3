@@ -21,6 +21,7 @@ export const Swap = () => {
     const { connection } = useConnection();
     const { publicKey, sendTransaction } = useWallet();
     const { wallet } = useWallet()
+    console.log('WALLET', wallet)
 
 
     const onClick = useCallback(async () => {
@@ -28,6 +29,7 @@ export const Swap = () => {
         console.log('pubkey:', publicKey.toString());
 
         const provider = new Provider(connection, wallet)
+        console.log('PAYER', provider.wallet);
 
         const program = await Program.at(new PublicKey(MOONRACE_PROGRAM_ID), provider)
         console.log(program);
@@ -47,14 +49,14 @@ export const Swap = () => {
             connection,
             moonraceMint,
             TOKEN_PROGRAM_ID,
-            provider.wallet.payer
+            publicKey
           );
 
           const USDC = new Token(
             connection,
             usdcMint,
             TOKEN_PROGRAM_ID,
-            provider.wallet.payer
+            publicKey
           );
 
           let usdc_user_account = await USDC.getOrCreateAssociatedAccountInfo(
