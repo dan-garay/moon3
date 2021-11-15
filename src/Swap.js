@@ -20,6 +20,8 @@ export const Swap = () => {
         if (!publicKey) throw new WalletNotConnectedError();
 
         const provider = new Provider(connection, wallet)
+
+        // ONLY WORKING WITH HEDGE PROGRAM IDS
         const program = await Program.at(new PublicKey(HEDGE_PROGRAM_ID), provider)
         console.log(program);
 
@@ -34,6 +36,24 @@ export const Swap = () => {
         // const signature = await sendTransaction(transaction, connection);
 
         // await connection.confirmTransaction(signature, 'processed');
+
+    // await program.rpc.swap(
+    //     new anchor.BN(3 * 10**6 * 1000),
+    //     true,{
+    //     accounts: {
+    //       signer: provider.wallet.publicKey,
+    //       splTokenProgramInfo: SplToken.TOKEN_PROGRAM_ID,
+    //       systemProgram: SystemProgram.programId,
+    //       usdcUserAccount: UserUsdcAccount.address,
+    //       moonraceUserAccount: UserMoonraceAccount.address,
+    //       usdcPoolAccount: usdcPoolAccount,
+    //       usdcFundAccount: usdcFundAccount,
+    //       moonracePoolAccount: moonracePoolAccount,
+    //     },
+    //     signers: [provider.wallet.payer],
+    //   });
+    // })
+
     }, [publicKey, sendTransaction, connection]);
 
     return (
