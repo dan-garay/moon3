@@ -13,11 +13,10 @@ export const MOONRACE_PROGRAM_ID = '6dsJRgf4Kdq6jE7Q5cgn2ow4KkTmRqukw9DDrYP4uvij
 export const HEDGE_PROGRAM_ID = '6dsJRgf4Kdq6jE7Q5cgn2ow4KkTmRqukw9DDrYP4uvij'
 // export const HEDGE_PROGRAM_ID = 'HEDGEau7kb5L9ChcchUC19zSYbgGt3mVCpaTK6SMD8P4'
 
-export function Swap() {
+export function Buy() {
     // Connection and wallet
     const { connection } = useConnection()
     const { publicKey: userWalletPublicKey } = useWallet()
-    const { publicKey } = useWallet()
     const Wallet = useWallet()
 
     // Button click
@@ -51,21 +50,6 @@ export function Swap() {
         // const [userAirdropStateAccount, userairdropbump] =  await getUserAirdropStatePubkey(program.programId, userWalletPublicKey.toString());
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
 
-        const moonraceToken = new Token(
-            connection,
-            moonraceMint,
-            TOKEN_PROGRAM_ID,
-            userWalletPublicKey
-          );
-
-          const USDC = new Token(
-            connection,
-            usdcMint,
-            TOKEN_PROGRAM_ID,
-            userWalletPublicKey
-          );
-
-        console.log(publicKey.toString());
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -97,7 +81,7 @@ export function Swap() {
 
         const swapTx = new Transaction().add(
             await program.instruction.swap(
-                new BN(3 * 10**6 * 1000),
+                new BN(3 * 10**6 * 1000), // TODO: Hardcoded
                 true,
                 {
                     accounts: {
@@ -116,14 +100,10 @@ export function Swap() {
         )
         transaction.add(swapTx)
 
-        const signedTransaction = await Wallet.signTransaction(transaction)
-        await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())
-        // const signature = await sendTransaction(transaction, connection);
-        // await connection.confirmTransaction(signature, 'processed');
         return transaction;
     }, [Wallet, connection, userWalletPublicKey]);
 
-    const handleClick = async () => {
+    const handleBuy = async () => {
 
         const provider = new Provider(connection, Wallet, {
           /** disable transaction verification step */
@@ -142,8 +122,8 @@ export function Swap() {
       }
 
     return (
-        <button onClick={handleClick} >
-            Swap
+        <button onClick={handleBuy} >
+            Buy MOONRACE
         </button>
     );
 };

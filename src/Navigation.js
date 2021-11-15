@@ -4,7 +4,6 @@ import React from 'react';
 
 export const Navigation = () => {
     const { wallet } = useWallet();
-    console.log(wallet);
 
     return (
         <nav>

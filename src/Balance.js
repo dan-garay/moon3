@@ -5,7 +5,6 @@ import React, { useCallback } from 'react';
 
 const MOONRACE_PROGRAM_ID = '6dsJRgf4Kdq6jE7Q5cgn2ow4KkTmRqukw9DDrYP4uvij';
 
-
 export const Balance = () => {
     const { connection } = useConnection();
     const { publicKey, sendTransaction } = useWallet();
