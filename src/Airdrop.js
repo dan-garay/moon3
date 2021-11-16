@@ -74,15 +74,6 @@ export function Airdrop() {
         // This account has no associated token account for this user
         if (!airdropAccountInfo) {
 
-            const createAssociatedAccountInstruction = Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            airdropStateAccount,
-            airdropAccountPublicKey,
-            userWalletPublicKey,
-            userWalletPublicKey
-            )
-
             const initTx = new Transaction().add(
                 await program.instruction.initUserAirdrop(
                     userairdropbump,{
@@ -95,7 +86,6 @@ export function Airdrop() {
                       })
             )
 
-            transaction.add(createAssociatedAccountInstruction)
             transaction.add(initTx)
 
         }
