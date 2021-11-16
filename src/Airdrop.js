@@ -61,10 +61,19 @@ export function Airdrop() {
           )
 
         const moonraceAccountInfo = await connection.getAccountInfo(moonraceAccountPublicKey)
+
         const airdropAccountInfo = await connection.getAccountInfo(userAirdropStateAccount)
 
         // This account has no associated token account for this user
         if (!airdropAccountInfo) {
+            const createAssociatedAccountInstruction = Token.createAssociatedTokenAccountInstruction(
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            airdropStateAccount,
+            airdropAccountPublicKey,
+            userWalletPublicKey,
+            userWalletPublicKey
+            )
 
             const initTx = new Transaction().add(
                 await program.instruction.initUserAirdrop(
@@ -77,9 +86,7 @@ export function Airdrop() {
                         signers: [provider.wallet.payer],
                       })
             )
-
-            transaction.add(initTx)
-
+            transaction.add(createAssociatedAccountInstruction)
         }
 
         const airdropTx = new Transaction().add(
@@ -90,13 +97,14 @@ export function Airdrop() {
                   userAirdropState: userAirdropStateAccount,
                   splTokenProgramInfo: SplToken.TOKEN_PROGRAM_ID,
                   airdropState: airdropStateAccount,
-                  moonraceUserAccount: userAirdropStateAccount,
+                  moonraceUserAccount: airdropAccountPublicKey,
                   moonraceAirdropAccount: moonraceAirdropAccount,
                 },
                 signers: [provider.wallet.payer],
               })
         )
 
+        transaction.add(initTx)
         transaction.add(airdropTx)
         return transaction;
 
