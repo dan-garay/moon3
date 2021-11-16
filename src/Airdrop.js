@@ -61,19 +61,12 @@ export function Airdrop() {
           )
 
         const moonraceAccountInfo = await connection.getAccountInfo(moonraceAccountPublicKey)
-
         const airdropAccountInfo = await connection.getAccountInfo(userAirdropStateAccount)
+        // Undefined
+        console.log(userAirdropStateAccount.lastAirdropResetTimestamp);
 
         // This account has no associated token account for this user
         if (!airdropAccountInfo) {
-            const createAssociatedAccountInstruction = Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            airdropStateAccount,
-            airdropAccountPublicKey,
-            userWalletPublicKey,
-            userWalletPublicKey
-            )
 
             const initTx = new Transaction().add(
                 await program.instruction.initUserAirdrop(
@@ -86,8 +79,18 @@ export function Airdrop() {
                         signers: [provider.wallet.payer],
                       })
             )
-            transaction.add(createAssociatedAccountInstruction)
+            transaction.add(initTx)
         }
+
+        const resetTx = new Transaction().add(
+            await program.instruction.resetAirdrop({
+                accounts: {
+                  systemProgram: SystemProgram.programId,
+                  airdropState: airdropStateAccount,
+                },
+                signers: [provider.wallet.payer],
+              })
+        )
 
         const airdropTx = new Transaction().add(
             await program.instruction.airdrop({
@@ -97,15 +100,15 @@ export function Airdrop() {
                   userAirdropState: userAirdropStateAccount,
                   splTokenProgramInfo: SplToken.TOKEN_PROGRAM_ID,
                   airdropState: airdropStateAccount,
-                  moonraceUserAccount: airdropAccountPublicKey,
+                  moonraceUserAccount: moonraceAccountPublicKey,
                   moonraceAirdropAccount: moonraceAirdropAccount,
                 },
                 signers: [provider.wallet.payer],
               })
         )
 
-        transaction.add(initTx)
         transaction.add(airdropTx)
+        transaction.add(resetTx)
         return transaction;
 
     }, [Wallet, connection, userWalletPublicKey, provider]);
