@@ -1,10 +1,9 @@
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, Keypair, SystemProgram, Transaction, sendAndConfirmRawTransaction } from '@solana/web3.js';
+import { PublicKey, SystemProgram, Transaction, sendAndConfirmRawTransaction } from '@solana/web3.js';
 import React, { useCallback } from 'react';
 import { Provider, Program, BN } from '@project-serum/anchor'
-import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubKey, getMoonracePoolPubKey,
-    getMoonraceAirdropPubKey, getAirdropStatePubkey, getUserAirdropStatePubkey } from './util.js';
+import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubKey, getMoonracePoolPubKey } from './util.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 const SplToken = require('@solana/spl-token')
 
@@ -45,9 +44,6 @@ export function Buy() {
         const [moonraceMint, tempbump] =  await getMoonraceMintKey(program.programId);
         const [usdcPoolAccount, tempbump1] =  await getUSDCPoolPubKey(program.programId);
         const [moonracePoolAccount, tempbump2] =  await getMoonracePoolPubKey(program.programId);
-        const [moonraceAirdropAccount, tempbump3] =  await getMoonraceAirdropPubKey(program.programId);
-        const [airdropStateAccount, airdropbump] =  await getAirdropStatePubkey(program.programId);
-        // const [userAirdropStateAccount, userairdropbump] =  await getUserAirdropStatePubkey(program.programId, userWalletPublicKey.toString());
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
 
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
@@ -105,18 +101,7 @@ export function Buy() {
 
     const handleBuy = async () => {
 
-        const provider = new Provider(connection, Wallet, {
-          /** disable transaction verification step */
-          skipPreflight: false,
-          /** desired commitment level */
-          commitment: 'confirmed',
-          /** preflight commitment level */
-          preflightCommitment: 'confirmed'
-        })
-        const program = await Program.at(new PublicKey(MOONRACE_PROGRAM_ID), provider)
-
         const transaction = await getTransaction()
-
         const signedTransaction = await Wallet.signTransaction(transaction)
         await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())
       }
