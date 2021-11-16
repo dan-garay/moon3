@@ -37,7 +37,6 @@ export function Buy() {
             feePayer: userWalletPublicKey,
             recentBlockhash: blockhash
         })
-        const signers = []
 
         //derive all public keys
         const [usdcMint, tempbump5] =  await getTestUsdcMint(program.programId);
