@@ -45,6 +45,7 @@ export function Buy() {
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
         const [moonraceConstants, moonraceConstantsbump] =  await getMoonraceConstPubkey(program.programId);
 
+        // USDC Public Key
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -52,6 +53,7 @@ export function Buy() {
             userWalletPublicKey
         )
 
+        // MOONRACE Public Key
         const moonraceAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -59,6 +61,7 @@ export function Buy() {
             userWalletPublicKey
           )
 
+        // MOONRACE Account Info
         const moonraceAccountInfo = await connection.getAccountInfo(moonraceAccountPublicKey)
 
         // This account has no associated token account for this user
@@ -74,6 +77,7 @@ export function Buy() {
             transaction.add(createAssociatedAccountInstruction)
         }
 
+        // Swap USDC for MOONRACE
         const swapTx = new Transaction().add(
             await program.instruction.swap(
                 new BN(3 * 10**6 * 1000), // TODO: Hardcoded
@@ -94,6 +98,7 @@ export function Buy() {
                 }
             )
         )
+        // Add insturction to transaction user signs
         transaction.add(swapTx)
 
         return transaction;
@@ -101,6 +106,7 @@ export function Buy() {
 
     const handleClick = async () => {
 
+        // Create transaction and sign
         const transaction = await getTransaction()
         const signedTransaction = await Wallet.signTransaction(transaction)
         await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())

@@ -37,7 +37,7 @@ export function Sell() {
             recentBlockhash: blockhash
         })
 
-        //derive all public keys
+        //Derive all public keys
         const [usdcMint, tempbump5] =  await getTestUsdcMint(program.programId);
         const [moonraceMint, tempbump] =  await getMoonraceMintKey(program.programId);
         const [usdcPoolAccount, tempbump1] =  await getUSDCPoolPubKey(program.programId);
@@ -47,6 +47,7 @@ export function Sell() {
 
         console.log(moonraceConstants.toString())
 
+        // USDC Public Key
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -54,6 +55,7 @@ export function Sell() {
             userWalletPublicKey
         )
 
+        // MOONRACE Public Key
         const moonraceAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -61,6 +63,7 @@ export function Sell() {
             userWalletPublicKey
           )
 
+          // MOONRACE Account Info
         const moonraceAccountInfo = await connection.getAccountInfo(moonraceAccountPublicKey)
 
         // This account has no associated token account for this user
@@ -76,6 +79,7 @@ export function Sell() {
             transaction.add(createAssociatedAccountInstruction)
         }
 
+        // Swap MOONRACE for USDC
         const swapTx = new Transaction().add(
             await program.instruction.swap(
                 new BN(38461538461538), // TODO: Hardcoded
@@ -96,6 +100,7 @@ export function Sell() {
                 }
             )
         )
+        // Add instruction to transaction
         transaction.add(swapTx)
 
         return transaction;
@@ -103,6 +108,7 @@ export function Sell() {
 
     const handleClick = async () => {
 
+        // Create transaction and sign
         const transaction = await getTransaction()
         const signedTransaction = await Wallet.signTransaction(transaction)
         await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())

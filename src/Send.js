@@ -10,6 +10,7 @@ export const Send = () => {
     const onClick = useCallback(async () => {
         if (!publicKey) throw new WalletNotConnectedError();
 
+        // Create transfer instruction in system program
         const transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: publicKey,
@@ -18,9 +19,10 @@ export const Send = () => {
             })
         );
 
+        // Sign
         const signature = await sendTransaction(transaction, connection);
-
         await connection.confirmTransaction(signature, 'processed');
+
     }, [publicKey, sendTransaction, connection]);
 
     return (

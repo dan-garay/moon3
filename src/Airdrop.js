@@ -47,7 +47,7 @@ export function Airdrop() {
         const [moonraceAirdropAccount, tempbump3] =  await getMoonraceAirdropPubKey(program.programId);
         const [moonraceMint, tempbump] =  await getMoonraceMintKey(program.programId);
 
-
+        // MOONRACE Public Key
         const moonraceAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -64,7 +64,7 @@ export function Airdrop() {
 
         // Create acc if none exists
         if (!airdropAccountInfo) {
-
+          // Init User Aidrop account
             const initTx = new Transaction().add(
                 await program.instruction.initUserAirdrop(
                     userairdropbump,{
@@ -79,7 +79,7 @@ export function Airdrop() {
             transaction.add(initTx)
         }
 
-      // Reset airdrop if can be reset
+      // Reset airdrop if can be reset (global)
       if (canResetAirdrop) {
         const resetTx = new Transaction().add(
             await program.instruction.resetAirdrop({
@@ -108,14 +108,14 @@ export function Airdrop() {
                 signers: [provider.wallet.payer],
               })
         )
-
+        // Add instruction to transaction
         transaction.add(airdropTx)
         return transaction;
 
     }, [Wallet, connection, userWalletPublicKey, provider]);
 
     const handleClick = async () => {
-
+        // Create and sign transaction
         const transaction = await getTransaction()
         const signedTransaction = await Wallet.signTransaction(transaction)
         await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())
