@@ -2,7 +2,7 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction, sendAndConfirmRawTransaction } from '@solana/web3.js';
 import React, { useCallback } from 'react';
-import { Provider, Program, BN } from '@project-serum/anchor'
+import { Provider, Program } from '@project-serum/anchor'
 import { getUserAirdropStatePubkey, getAirdropStatePubkey, getMoonraceAirdropPubKey, getMoonraceMintKey } from './util.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 const SplToken = require('@solana/spl-token')
@@ -60,12 +60,14 @@ export function Airdrop() {
             userWalletPublicKey
           )
 
-        const moonraceAccountInfo = await connection.getAccountInfo(moonraceAccountPublicKey)
+        // Check if they have an airdrop account
         const airdropAccountInfo = await connection.getAccountInfo(userAirdropStateAccount)
-        // Undefined
-        console.log(userAirdropStateAccount.lastAirdropResetTimestamp);
+        // Check 24 hours since last airdrop reset
+        const airdropState = await program.account.airdropState.fetch(airdropStateAccount)
+        const lastAirdropTimestamp = airdropState.lastAirdropResetTimestamp.toString()
+        const canResetAirdrop = (new Date(new Date() + (1000 * 60 * 60 * 24)) - new Date(lastAirdropTimestamp * 1000)) < 0
 
-        // This account has no associated token account for this user
+        // Create acc if none exists
         if (!airdropAccountInfo) {
 
             const initTx = new Transaction().add(
@@ -82,6 +84,8 @@ export function Airdrop() {
             transaction.add(initTx)
         }
 
+      // Reset airdrop if can be reset
+      if (canResetAirdrop) {
         const resetTx = new Transaction().add(
             await program.instruction.resetAirdrop({
                 accounts: {
@@ -91,7 +95,10 @@ export function Airdrop() {
                 signers: [provider.wallet.payer],
               })
         )
+        transaction.add(resetTx)
+      }
 
+      // airdrop
         const airdropTx = new Transaction().add(
             await program.instruction.airdrop({
                 accounts: {
@@ -108,7 +115,6 @@ export function Airdrop() {
         )
 
         transaction.add(airdropTx)
-        transaction.add(resetTx)
         return transaction;
 
     }, [Wallet, connection, userWalletPublicKey, provider]);
