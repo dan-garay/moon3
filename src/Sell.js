@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction, sendAndConfirmRawTransaction } from '@solana/web3.js';
 import React, { useCallback } from 'react';
 import { Provider, Program, BN } from '@project-serum/anchor'
-import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubKey, getMoonracePoolPubKey } from './util.js';
+import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubKey, getMoonracePoolPubKey, getMoonraceConstPubkey } from './util.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 const SplToken = require('@solana/spl-token')
 
@@ -16,7 +16,6 @@ export function Sell() {
     // Connection and wallet
     const { connection } = useConnection()
     const { publicKey: userWalletPublicKey } = useWallet()
-    const { publicKey } = useWallet()
     const Wallet = useWallet()
 
     // Button click
@@ -45,6 +44,7 @@ export function Sell() {
         const [usdcPoolAccount, tempbump1] =  await getUSDCPoolPubKey(program.programId);
         const [moonracePoolAccount, tempbump2] =  await getMoonracePoolPubKey(program.programId);
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
+        const [moonraceConstants, moonraceConstantsbump] =  await getMoonraceConstPubkey(program.programId);
 
         const moonraceToken = new Token(
             connection,
@@ -103,6 +103,7 @@ export function Sell() {
                         usdcPoolAccount: usdcPoolAccount,
                         usdcFundAccount: usdcFundAccount,
                         moonracePoolAccount: moonracePoolAccount,
+                        moonraceConstants: moonraceConstants,
                     },
                     signers: [provider.wallet.payer],
                 }

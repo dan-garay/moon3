@@ -56,6 +56,12 @@ export async function getUserAirdropStatePubkey (programId, pubkey) {
   return [findMintPublicKey, bump]
 }
 
+export async function getMoonraceConstPubkey (programId) {
+  const enc = new TextEncoder()
+  const [findMintPublicKey, bump] = await PublicKey.findProgramAddress([enc.encode('moonconst')], programId)
+  return [findMintPublicKey, bump]
+}
+
 // describe('moonrace', async () => {
 //   // Configure the client to use the local cluster.
 //   anchor.setProvider(anchor.Provider.env());
