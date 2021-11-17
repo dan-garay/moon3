@@ -100,7 +100,7 @@ export function Buy() {
         return transaction;
     }, [Wallet, connection, userWalletPublicKey]);
 
-    const handleBuy = async () => {
+    const handleClick = async () => {
 
         const transaction = await getTransaction()
         const signedTransaction = await Wallet.signTransaction(transaction)
@@ -108,7 +108,7 @@ export function Buy() {
       }
 
     return (
-        <button onClick={handleBuy} >
+        <button onClick={handleClick} >
             Buy MOONRACE
         </button>
     );

@@ -46,19 +46,7 @@ export function Sell() {
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
         const [moonraceConstants, moonraceConstantsbump] =  await getMoonraceConstPubkey(program.programId);
 
-        const moonraceToken = new Token(
-            connection,
-            moonraceMint,
-            TOKEN_PROGRAM_ID,
-            userWalletPublicKey
-          );
-
-          const USDC = new Token(
-            connection,
-            usdcMint,
-            TOKEN_PROGRAM_ID,
-            userWalletPublicKey
-          );
+        console.log(moonraceConstants.toString())
 
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -114,26 +102,15 @@ export function Sell() {
         return transaction;
     }, [Wallet, connection, userWalletPublicKey]);
 
-    const handleSell = async () => {
-
-        const provider = new Provider(connection, Wallet, {
-          /** disable transaction verification step */
-          skipPreflight: false,
-          /** desired commitment level */
-          commitment: 'confirmed',
-          /** preflight commitment level */
-          preflightCommitment: 'confirmed'
-        })
-        const program = await Program.at(new PublicKey(MOONRACE_PROGRAM_ID), provider)
+    const handleClick = async () => {
 
         const transaction = await getTransaction()
-
         const signedTransaction = await Wallet.signTransaction(transaction)
         await sendAndConfirmRawTransaction(connection, signedTransaction.serialize())
       }
 
     return (
-        <button onClick={handleSell} >
+        <button onClick={handleClick} >
             Sell MOONRACE
         </button>
     );
