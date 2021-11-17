@@ -8,9 +8,6 @@ import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubK
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 const SplToken = require('@solana/spl-token')
 
-
-export const MOONRACE_PROGRAM_ID = '6dsJRgf4Kdq6jE7Q5cgn2ow4KkTmRqukw9DDrYP4uvij';
-
 export function Sell() {
     // Connection and wallet
     const { connection } = useConnection()
@@ -44,8 +41,6 @@ export function Sell() {
         const [moonracePoolAccount, tempbump2] =  await getMoonracePoolPubKey(program.programId);
         const [usdcFundAccount, tempbump4] =  await getUSDCFundPubKey(program.programId);
         const [moonraceConstants, moonraceConstantsbump] =  await getMoonraceConstPubkey(program.programId);
-
-        console.log(moonraceConstants.toString())
 
         // USDC Public Key
         const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
@@ -82,7 +77,7 @@ export function Sell() {
         // Swap MOONRACE for USDC
         const swapTx = new Transaction().add(
             await program.instruction.swap(
-                new BN(38461538461538), // TODO: Hardcoded
+                new BN(38461538400), // TODO: Hardcoded
                 false,
                 {
                     accounts: {

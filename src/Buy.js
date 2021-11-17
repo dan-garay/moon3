@@ -8,9 +8,6 @@ import { getMoonraceMintKey, getTestUsdcMint, getUSDCPoolPubKey, getUSDCFundPubK
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 const SplToken = require('@solana/spl-token')
 
-
-export const MOONRACE_PROGRAM_ID = '6dsJRgf4Kdq6jE7Q5cgn2ow4KkTmRqukw9DDrYP4uvij';
-
 export function Buy() {
     // Connection and wallet
     const { connection } = useConnection()
