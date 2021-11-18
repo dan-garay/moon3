@@ -18,6 +18,8 @@ import { Balance } from './Balance';
 import { Buy } from './Buy';
 import { Sell } from './Sell';
 import { Airdrop } from './Airdrop';
+import { Presale } from './Presale';
+import { Team } from './Team';
 
 export const App = () => {
     const network = WalletAdapterNetwork.Devnet;
@@ -50,6 +52,8 @@ export const App = () => {
                     <Buy />
                     <Sell />
                     <Airdrop />
+                    <Presale />
+                    <Team />
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
