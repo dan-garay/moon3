@@ -63,6 +63,9 @@ export function Airdrop() {
 
         // Check if 24 hrs have passed or we are at the beginning
         const diff = new Date(new Date() + (1000 * 60 * 60 * 24)) - new Date(lastAirdropTimestamp * 1000) <= 0
+
+        console.log(new Date(new Date() + (1000 * 60 * 60 * 24)) - new Date(lastAirdropTimestamp * 1000))
+
         const canResetAirdrop = diff || (lastAirdropTimestamp == 0)
 
         // Create acc if none exists

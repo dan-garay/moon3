@@ -36,7 +36,7 @@ export function Team() {
     }, [Wallet, connection, userWalletPublicKey]);
 
     const handleClick = async () => {
-        // Create and sign transaction
+        // Get team allocations and print
         const team = await getTeam()
         console.log('BLUE TEAM GETS:', team[0])
         console.log('RED TEAM GETS:', team[1])
