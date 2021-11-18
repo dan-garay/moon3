@@ -1,11 +1,9 @@
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, Transaction, sendAndConfirmRawTransaction } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import React, { useCallback } from 'react';
 import { Provider, Program } from '@project-serum/anchor'
-import { getUserAirdropStatePubkey, getAirdropStatePubkey, getMoonraceAirdropPubKey, getMoonraceMintKey, MOONRACE_PROGRAM_ID} from './Constants.js';
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
-const SplToken = require('@solana/spl-token')
+import { getAirdropStatePubkey, MOONRACE_PROGRAM_ID} from './Constants.js';
 
 export function Team() {
     // Connection and wallet
