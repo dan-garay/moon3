@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Keypair } from '@solana/web3.js';
 import React, { useCallback } from 'react';
 import { Provider, Program } from '@project-serum/anchor'
-import { getMoonraceMintKey, MOONRACE_PROGRAM_ID } from './Constants.js';
+import { getMoonraceMintKey, MOONRACE_PROGRAM_ID, getTestUsdcMint} from './Constants.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 
 export function Balance() {
@@ -18,6 +18,41 @@ export function Balance() {
         const balance = await connection.getBalance(userWalletPublicKey)
         return balance;
     }, [connection, userWalletPublicKey])
+
+    const usdcBalance = useCallback(async () => {
+        const provider = new Provider(connection, Wallet, {
+            /** disable transaction verification step */
+            skipPreflight: false,
+            /** desired commitment level */
+            commitment: 'confirmed',
+            /** preflight commitment level */
+            preflightCommitment: 'confirmed'
+          })
+        // Initialize program
+        const program = await Program.at(new PublicKey(MOONRACE_PROGRAM_ID), provider)
+        const [usdcMint, tempbump5] =  await getTestUsdcMint(program.programId);
+
+
+        // USDC Public Key
+        const usdcAccountPublicKey = await Token.getAssociatedTokenAddress(
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            usdcMint,
+            userWalletPublicKey
+        )
+
+        const usdcToken = await new Token(
+            connection,
+            usdcMint,
+            TOKEN_PROGRAM_ID,
+            Keypair.generate()
+        )
+
+        // MOONRACE Account Info
+        const usdcAccountInfo = await usdcToken.getAccountInfo(usdcAccountPublicKey)
+        return usdcAccountInfo.amount.toNumber();
+
+    }, [Wallet, connection, userWalletPublicKey]);
 
     // Moonrace balance
     const moonraceBalance = useCallback(async () => {
@@ -55,15 +90,17 @@ export function Balance() {
             console.log('No MOONRACE account found');
         }
 
-        return moonraceAccountInfo;
+        return moonraceAccountInfo.amount.toNumber();
     }, [Wallet, connection, userWalletPublicKey]);
 
     const handleClick = async () => {
 
         const solBalance = await solanaBalance()
         const moonBalance = await moonraceBalance()
-        console.log('MOONRACE BALANCE:', moonBalance.amount.toNumber())
+        const usdBalance =  await usdcBalance()
+        console.log('MOONRACE BALANCE:', moonBalance)
         console.log('SOLANA BALANCE:', solBalance)
+        console.log('USDC BALANCE:', usdBalance)
     }
 
     return (
