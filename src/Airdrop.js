@@ -62,10 +62,10 @@ export function Airdrop() {
         const lastAirdropTimestamp = airdropState.lastAirdropResetTimestamp.toString()
 
         // Check if 24 hrs have passed or we are at the beginning
-        const diff = new Date(new Date() + (1000 * 60 * 60 * 24)) - new Date(lastAirdropTimestamp * 1000) <= 0
-
-        console.log(new Date(new Date() + (1000 * 60 * 60 * 24)) - new Date(lastAirdropTimestamp * 1000))
-
+        const lastAirdropDate = new Date(lastAirdropTimestamp * 1000)
+        // Last aidrop date
+        console.log('Last Airdrop:', lastAirdropDate)
+        const diff =  new Date() - lastAirdropDate > (24*60*60*1000)
         const canResetAirdrop = diff || (lastAirdropTimestamp == 0)
 
         // Create acc if none exists
@@ -87,7 +87,6 @@ export function Airdrop() {
 
       // Reset airdrop if can be reset (global)
       if (canResetAirdrop) {
-        console.log('here')
         const resetTx = new Transaction().add(
             await program.instruction.resetAirdrop({
                 accounts: {
@@ -98,6 +97,7 @@ export function Airdrop() {
               })
         )
         transaction.add(resetTx)
+        console.log('Airdrop was reset')
       }
 
       // airdrop
