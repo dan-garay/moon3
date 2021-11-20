@@ -33,7 +33,7 @@ export function Team() {
         // Get allocations
         return [airdropState.blueTeamAvailToday.toString(), airdropState.redTeamAvailToday.toString()]
 
-    }, [Wallet, connection, userWalletPublicKey]);
+    }, [Wallet, connection, userWalletPublicKey, provider]);
 
     const handleClick = async () => {
         // Get team allocations and print
